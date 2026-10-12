@@ -27,3 +27,5 @@
 main 推送通过独立 Webhook、Hermes 固定脚本和服务器持久队列发布。版本化文件位于 `/plugins/<版本号>/music-free-plugin.js`，固定更新地址不变。发布时同步修改 JS、package.json 和 plugins.json 中的版本号。
 
 协议依据：[MusicFree 官方插件协议](https://musicfree.catcat.work/plugin/protocol.html)。安卓和 Windows 实机播放需分别验收，Node 测试不替代实机验收。
+
+2026-10-12 已在 Windows MusicFree 0.0.8 实测插件 0.1.1：网络安装、变量配置、QQ 搜索、首次完整下载后播放、进度跳转、下载到电脑、服务端歌单及排序刷新、插件更新均通过。安卓实机尚待验收。Windows 的服务器歌单入口为「热门歌单 → 安然音乐」。
