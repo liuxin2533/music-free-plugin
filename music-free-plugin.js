@@ -60,12 +60,12 @@ async function source(item, quality) {
 }
 
 module.exports = {
-  platform: '安然音乐', author: 'liuxin2533', version: '0.2.0',
+  platform: '安然音乐', author: 'liuxin2533', version: '0.2.1',
   srcUrl: 'https://music.anrand.tech/plugins/music-free-plugin.js', primaryKey: ['id'],
   cacheControl: 'no-store', supportedSearchType: ['music'],
-  userVariables: [{key: 'serverURL', title: '服务器地址（留空使用 music.anrand.tech）'},
-    {key: 'token', title: '插件密钥（网站设置页生成）'},
-    {key: 'source', title: '搜索渠道（QQ / 网易云 / 酷狗 / 酷我 / 咪咕；留空默认 QQ）'}],
+  userVariables: [{key: 'serverURL', name: '服务器地址（留空使用 music.anrand.tech）', title: '服务器地址（留空使用 music.anrand.tech）'},
+    {key: 'token', name: '插件密钥（网站设置页生成）', title: '插件密钥（网站设置页生成）'},
+    {key: 'source', name: '搜索渠道（QQ / 网易云 / 酷狗 / 酷我 / 咪咕；留空默认 QQ）', title: '搜索渠道（QQ / 网易云 / 酷狗 / 酷我 / 咪咕；留空默认 QQ）'}],
   async search(query, page, type) {
     if (page > 1 || (type && type !== 'music')) return {isEnd: true, data: []};
     let result = await request('/searches', 'POST', {query, source: searchSource()});
