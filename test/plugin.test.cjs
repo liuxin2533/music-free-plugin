@@ -53,17 +53,12 @@ test('insecure addresses and missing token fail before network', async () => {
   }
 });
 
-test('QQ is default and all five source names are accepted', async () => {
-  for (const [value, expected] of [['','qq'],[' QQ 音乐 ','qq'],['网易云','netease'],['酷狗','kugou'],['酷我','kuwo'],['咪咕','migu'],['NETEASE','netease']]) {
+test('search follows server configuration and ignores legacy local source preferences', async () => {
+  for (const value of ['', '网易云', 'invalid']) {
     const {plugin,calls}=load([{status:'completed',items:[]}],{token:'test-plugin-key',source:value});
-    await plugin.search('Song',1,'music');assert.equal(calls[0].data.source,expected);
+    await plugin.search('Song',1,'music');assert.equal(calls[0].data.source,undefined);
+    assert.equal(plugin.userVariables.map(item => item.key).join(','),'serverURL,token');
   }
-});
-test('invalid source only blocks search, not playback of an existing track', async () => {
-  const {plugin,calls}=load([{status:'ready',url:'https://media.test/song',track:{format:'mp3'}}],{token:'test-plugin-key',source:'invalid'});
-  await assert.rejects(plugin.search('Song',1,'music'),/搜索渠道/);assert.equal(calls.length,0);
-  assert.equal((await plugin.getMediaSource({id:'netease-stable'},'standard')).url,'https://media.test/song');
-  assert.ok(calls[0].url.includes('/tracks/netease-stable/download'));
 });
 test('tracks with the same title retain separate stable server IDs and source names', async () => {
   const {plugin}=load([{status:'completed',items:[{id:'qq-id',title:'Song',sourceName:'QQ 音乐'},{id:'netease-id',title:'Song',sourceName:'网易云音乐'}]}]);

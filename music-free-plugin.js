@@ -32,16 +32,6 @@ function music(track) {
     description: (track.sourceName ? track.sourceName + ' · ' : '') + (track.format ? '原始文件 · ' + track.format.toUpperCase() : '首次播放会先下载到服务器')};
 }
 
-function searchSource() {
-  const value = String((env.getUserVariables() || {}).source || 'qq').trim().toLowerCase().replace(/\s/g, '');
-  const aliases = {qq:'qq', 'qq音乐':'qq', netease:'netease', '网易云':'netease', '网易云音乐':'netease',
-    kugou:'kugou', '酷狗':'kugou', '酷狗音乐':'kugou', kuwo:'kuwo', '酷我':'kuwo', '酷我音乐':'kuwo',
-    migu:'migu', '咪咕':'migu', '咪咕音乐':'migu'};
-  if (!value) return 'qq';
-  if (!aliases[value]) throw new Error('搜索渠道请填写 QQ、网易云、酷狗、酷我或咪咕；留空默认 QQ');
-  return aliases[value];
-}
-
 async function source(item, quality) {
   if (quality && quality !== 'standard') return null;
   const deadline = Date.now() + 120000;
@@ -60,15 +50,14 @@ async function source(item, quality) {
 }
 
 module.exports = {
-  platform: '安然音乐', author: 'liuxin2533', version: '0.2.2',
+  platform: '安然音乐', author: 'liuxin2533', version: '0.3.0',
   srcUrl: 'https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/music-free-plugin.js', primaryKey: ['id'],
   cacheControl: 'no-store', supportedSearchType: ['music'],
   userVariables: [{key: 'serverURL', name: '服务器地址（留空使用 music.anrand.tech）', title: '服务器地址（留空使用 music.anrand.tech）'},
-    {key: 'token', name: '插件密钥（网站设置页生成）', title: '插件密钥（网站设置页生成）'},
-    {key: 'source', name: '搜索渠道（QQ / 网易云 / 酷狗 / 酷我 / 咪咕；留空默认 QQ）', title: '搜索渠道（QQ / 网易云 / 酷狗 / 酷我 / 咪咕；留空默认 QQ）'}],
+    {key: 'token', name: '插件密钥（网站设置页生成）', title: '插件密钥（网站设置页生成）'}],
   async search(query, page, type) {
     if (page > 1 || (type && type !== 'music')) return {isEnd: true, data: []};
-    let result = await request('/searches', 'POST', {query, source: searchSource()});
+    let result = await request('/searches', 'POST', {query});
     const deadline = Date.now() + 65000;
     while (result.status === 'queued' || result.status === 'running') {
       if (Date.now() >= deadline) throw new Error('搜索仍在处理，请稍后重试');
