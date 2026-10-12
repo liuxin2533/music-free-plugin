@@ -1,2 +1,3 @@
-{"name":"anran-music-free-plugin","version":"0.1.1","private":true,"scripts":{"test":"node --test"}}
+{"name":"anran-music-free-plugin","version":"0.2.0","private":true,"scripts":{"test":"node --test"}}
+
 
