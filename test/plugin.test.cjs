@@ -70,3 +70,13 @@ test('tracks with the same title retain separate stable server IDs and source na
   const result=await plugin.search('Song',1,'music');
   assert.notEqual(result.data[0].id,result.data[1].id);assert.match(result.data[1].description,/网易云音乐/);
 });
+
+test('plugin updates come from GitHub while API calls stay on the music server', async () => {
+  const {plugin,calls}=load([{id:'track',title:'Song'}]);
+  assert.equal(plugin.srcUrl,'https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/music-free-plugin.js');
+  await plugin.getMusicInfo({id:'track'});
+  assert.ok(calls[0].url.startsWith('https://music.anrand.tech/api/v1/'));
+  const manifest=JSON.parse(fs.readFileSync(require('node:path').join(__dirname,'../plugins.json'),'utf8'));
+  assert.equal(manifest.plugins[0].url,plugin.srcUrl);
+  assert.equal(manifest.plugins[0].version,plugin.version);
+});

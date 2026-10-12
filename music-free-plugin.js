@@ -60,8 +60,8 @@ async function source(item, quality) {
 }
 
 module.exports = {
-  platform: '安然音乐', author: 'liuxin2533', version: '0.2.1',
-  srcUrl: 'https://music.anrand.tech/plugins/music-free-plugin.js', primaryKey: ['id'],
+  platform: '安然音乐', author: 'liuxin2533', version: '0.2.2',
+  srcUrl: 'https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/music-free-plugin.js', primaryKey: ['id'],
   cacheControl: 'no-store', supportedSearchType: ['music'],
   userVariables: [{key: 'serverURL', name: '服务器地址（留空使用 music.anrand.tech）', title: '服务器地址（留空使用 music.anrand.tech）'},
     {key: 'token', name: '插件密钥（网站设置页生成）', title: '插件密钥（网站设置页生成）'},

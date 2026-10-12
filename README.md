@@ -4,13 +4,13 @@
 
 ## 安装
 
-1. 在 MusicFree「插件管理」中选择从网络安装：`https://music.anrand.tech/plugins/music-free-plugin.js`。
+1. 在 MusicFree「插件管理」中选择从网络安装：`https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/music-free-plugin.js`。
 2. 在网站 `https://music.anrand.tech` 的设置页生成插件密钥。
 3. 打开「安然音乐」插件设置，填写插件密钥。服务器地址留空即可；自建部署填写 HTTPS 域名。
 4. 「搜索渠道」留空默认 QQ；也可填写 `网易云`、`酷狗`、`酷我`、`咪咕`，或对应英文 `netease`、`kugou`、`kuwo`、`migu`。渠道选择只影响新搜索，已有歌曲仍按原渠道播放。
 5. 搜索歌曲，或在推荐歌单中进入服务器歌单。管理后台修改歌单后，重新获取即可看到更新。
 
-订阅地址：`https://music.anrand.tech/plugins/plugins.json`。更新使用 MusicFree 的插件更新功能。密钥不包含在公开插件代码和订阅文件中。
+订阅地址：`https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/plugins.json`。更新使用 MusicFree 的插件更新功能。密钥不包含在公开插件代码和订阅文件中。
 
 ## 行为与边界
 
@@ -25,7 +25,7 @@
 
 `node --test` 运行协议测试，不依赖真实账号。MusicFree 自带 `axios` 和 `env`；插件不修改共享 axios 默认设置。
 
-main 推送通过独立 Webhook、Hermes 固定脚本和服务器持久队列发布。版本化文件位于 `/plugins/<版本号>/music-free-plugin.js`，固定更新地址不变。发布时同步修改 JS、package.json 和 plugins.json 中的版本号。
+插件由公开 GitHub 仓库直接分发，安装与更新使用 Raw 地址。服务器只运行音乐 API，不再保存或发布插件文件。发布时同步修改 JS、package.json 和 plugins.json 中的版本号。
 
 协议依据：[MusicFree 官方插件协议](https://musicfree.catcat.work/plugin/protocol.html)。安卓和 Windows 实机播放需分别验收，Node 测试不替代实机验收。
 
@@ -34,3 +34,5 @@ main 推送通过独立 Webhook、Hermes 固定脚本和服务器持久队列发
 0.2.0 新增五渠道搜索配置和来源说明，固定安装及订阅地址不变。已安装用户点击插件「更新」即可；无需重新生成密钥。新增渠道测试与实机状态见私有后端仓库验收记录。
 
 0.2.1 同时提供 Android 的 title 与 Windows 0.0.8 的 name 字段，两个客户端的用户变量均显示中文说明。
+
+0.2.2 仅迁移安装、订阅与更新地址至 GitHub，保持已发布的 0.2.1 功能。旧服务器安装地址已停用；已安装用户需从上述 GitHub 地址重新安装一次，之后使用插件更新按钮即可。
