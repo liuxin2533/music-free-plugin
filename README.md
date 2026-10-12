@@ -1,40 +1,30 @@
 # 安然音乐 · MusicFree 插件
 
-当前版本 **0.3.0**，渠道和下载音质统一在 Web UI 设置，插件通过 GitHub 安装与更新。
+当前版本 **0.4.0**，通过 GitHub 安装和更新。
 
-安卓和 Windows 共用的 CommonJS 插件，连接自己的安然音乐服务器。默认搜索 QQ，可选网易云、酷狗、酷我和咪咕，歌曲首次播放时先完整下载到服务器，再提供播放地址，后续复用。
+安卓和 Windows 共用 CommonJS 插件。一次搜索服务器上所有启用渠道，只返回音频可解析、大小已确认且在统一上限内的结果。QQ、网易云、酷狗、酷我、咪咕均可在 Web UI 启停。
 
-## 安装
+## 安装与设置
 
-1. 在 MusicFree「插件管理」中选择从网络安装：`https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/music-free-plugin.js`。
-2. 在网站 `https://music.anrand.tech` 的设置页生成插件密钥。
-3. 打开「安然音乐」插件设置，填写插件密钥。服务器地址留空即可；自建部署填写 HTTPS 域名。
-4. 在 **Web UI → 设置** 选择默认搜索渠道和各渠道下载音质。首次默认 QQ，另支持网易云、酷狗、酷我、咪咕；安卓和 Windows 自动读取同一份服务器设置，插件内没有渠道/音质选项。
-5. 搜索歌曲或打开服务器歌单。切换默认渠道只影响新的搜索，已收藏歌曲始终按原渠道播放；网页修改歌单后重新获取即可。
+1. MusicFree → 插件管理 → 从网络安装：`https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/music-free-plugin.js`。
+2. 在 `https://music.anrand.tech` 的设置页获取插件密钥，填入插件设置；服务器地址留空即可。
+3. **Web UI → 设置 → 每首歌曲大小上限**：默认 10 MB，可修改，所有启用渠道共用；无需配置音质档位。各渠道可选 Cookie 单独保存。
+4. 搜索或打开「服务器歌单」，首次播放先完整下载到服务器，后续复用已有音频。MusicFree 下载功能保存到当前设备。
 
-订阅地址：`https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/plugins.json`。更新使用 MusicFree 的插件更新功能。密钥不包含在公开插件代码和订阅文件中。
+订阅地址：`https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/plugins.json`。插件与订阅仅通过 GitHub 分发，服务器不托管插件。旧服务器地址安装的插件需从 GitHub 重新安装一次，以后用 MusicFree 插件更新功能更新。
 
-## 行为与边界
+## 大小显示与行为
 
-- 首次播放按 1.5 秒间隔查询下载任务，单个 HTTP 请求超时 10 秒，等待约 120 秒后提示稍后重试；服务器后台继续任务。
-- 只提供 `standard` 这一原始文件入口，实际可能是 FLAC、MP3 等格式，不把同一文件伪装成多个音质。
-- 歌曲使用服务器稳定 ID，音频地址有时效，每次播放重新获取。客户端下载功能把服务器文件下载到当前设备。
-- 支持搜索、详情、歌词、全部已下载、最近入库和自建服务器歌单。
-- 不同步 MusicFree 的原生收藏、最近播放或本地歌单编辑；不修改 MusicFree 客户端。
-- 插件密钥只允许读取和请求下载，不能编辑后台、删除文件或获取任何渠道的 Cookie。
+MusicFree 歌曲列表没有独立大小栏。插件在专辑说明中显示 `5.25 MB · 咪咕音乐 · 专辑名`，同时提供 size 与 qualities.standard.size；originalAlbum 保留原专辑名，歌曲标题、歌手、稳定 ID 不改。每首歌只提供一份原始文件，不虚构四档音质。
 
-## 开发与发布
+搜索会解析和检查候选音频，冷搜索可能等待约 50 秒；单次请求超时 10 秒。服务器最多保留五分钟搜索结果；上限、渠道启用或 Cookie 改动后重新搜索会生效。超限、未知大小或不可用的音频不展示。各渠道同名歌曲仍独立，点击后不会换成别的平台歌曲。
 
-`node --test` 运行协议测试，不依赖真实账号。MusicFree 自带 `axios` 和 `env`；插件不修改共享 axios 默认设置。
+首次播放约每 1.5 秒轮询任务，等待上限约 120 秒，之后后台继续；可稍后再次播放。音源可能在搜索后失效，完整音频检查也可能失败；MusicFree 可能不显示插件抛出的详细错误，可在 Web UI 下载任务查看。
 
-插件由公开 GitHub 仓库直接分发，安装和更新使用 Raw 地址；服务器只提供音乐 API。main 推送不触发服务器发布。发布时同步修改 JS、package.json 和 plugins.json 中的版本号。
+已有服务器曲库文件保留，不因上限变小而删除；仍能从曲库或歌单播放。服务器歌单重新获取时读取最新内容。不修改 MusicFree，不同步其原生收藏、最近播放或本地歌单编辑。
 
-协议依据：[MusicFree 官方插件协议](https://musicfree.catcat.work/plugin/protocol.html)。安卓和 Windows 实机播放需分别验收，Node 测试不替代实机验收。
+## 验证
 
-2026-10-12 已在 Windows MusicFree 0.0.8 实测插件 0.1.1：网络安装、变量配置、QQ 搜索、首次完整下载后播放、进度跳转、下载到电脑、服务端歌单及排序刷新、插件更新均通过。安卓实机尚待验收。Windows 的服务器歌单入口为「热门歌单 → 安然音乐」。
+`node --test` 运行 11 项协议测试，均通过。实际 MusicFree 新版安装、Android/Windows 播放及列表呈现待实机验收。历史 Windows MusicFree 0.0.8 + 插件 0.1.1 的安装/播放/拖动/下载验证不能替代本次新版验收。
 
-0.3.0 将渠道与下载音质配置集中到 Web UI，固定安装及订阅地址保持不变。已有文件复用，插件不提供虚构的播放器音质档位。新版后端也会忽略 0.2.x 插件传入的旧渠道偏好。
-
-连接变量同时提供 Android 协议的 title 与 Windows 0.0.8 的 name 字段。0.3.0 的 10 项协议测试通过；新版 Windows/安卓实机体验待用户验收。
-
-0.2.2 迁移插件分发至 GitHub；0.3.0 使用网页统一配置。旧服务器安装地址已下线，已安装用户需从 GitHub 地址重新安装一次，此后直接从 GitHub 更新。
+参考：[MusicFree 官方插件协议](https://musicfree.catcat.work/plugin/protocol.html)、[安卓列表](https://github.com/maotoumao/MusicFree/blob/master/src/components/mediaItem/musicItem.tsx)、[桌面列表](https://github.com/maotoumao/MusicFreeDesktop/blob/master/src/renderer/components/MusicList/index.tsx)。

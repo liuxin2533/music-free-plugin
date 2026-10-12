@@ -60,6 +60,17 @@ test('search follows server configuration and ignores legacy local source prefer
     assert.equal(plugin.userVariables.map(item => item.key).join(','),'serverURL,token');
   }
 });
+
+test('known size is visible in list metadata and native quality data before download', async () => {
+  const {plugin}=load([{status:'completed',items:[{id:'song',title:'成都',artist:'Singer',album:'Album',sourceName:'QQ 音乐',size:8123456,format:'mp3',downloaded:false}]}]);
+  const item=(await plugin.search('成都',1,'music')).data[0];
+  assert.equal(item.qualities.standard.size,8123456);
+  assert.equal(item.size,8123456);
+  assert.match(item.album,/8\.12 MB/);
+  assert.match(item.album,/QQ 音乐/);
+  assert.equal(item.originalAlbum,'Album');
+  assert.equal(item.title,'成都');
+});
 test('tracks with the same title retain separate stable server IDs and source names', async () => {
   const {plugin}=load([{status:'completed',items:[{id:'qq-id',title:'Song',sourceName:'QQ 音乐'},{id:'netease-id',title:'Song',sourceName:'网易云音乐'}]}]);
   const result=await plugin.search('Song',1,'music');

@@ -26,10 +26,13 @@ async function request(path, method, data) {
 }
 
 function music(track) {
-  return {id: track.id, title: track.title, artist: track.artist, album: track.album,
+  const size = Number.isFinite(track.size) && track.size > 0 ? track.size : undefined;
+  const summary = [size ? (size / 1000000).toFixed(2) + ' MB' : '', track.sourceName, track.album].filter(Boolean).join(' · ');
+  return {id: track.id, title: track.title, artist: track.artist, album: summary,
+    originalAlbum: track.album, size,
     duration: track.duration || undefined, artwork: track.artwork || undefined,
-    qualities: {standard: {size: track.size || undefined}},
-    description: (track.sourceName ? track.sourceName + ' · ' : '') + (track.format ? '原始文件 · ' + track.format.toUpperCase() : '首次播放会先下载到服务器')};
+    qualities: {standard: {size}},
+    description: summary + (track.format ? ' · ' + track.format.toUpperCase() : ' · 首次播放会先下载到服务器')};
 }
 
 async function source(item, quality) {
@@ -50,7 +53,7 @@ async function source(item, quality) {
 }
 
 module.exports = {
-  platform: '安然音乐', author: 'liuxin2533', version: '0.3.0',
+  platform: '安然音乐', author: 'liuxin2533', version: '0.4.0',
   srcUrl: 'https://raw.githubusercontent.com/liuxin2533/music-free-plugin/main/music-free-plugin.js', primaryKey: ['id'],
   cacheControl: 'no-store', supportedSearchType: ['music'],
   userVariables: [{key: 'serverURL', name: '服务器地址（留空使用 music.anrand.tech）', title: '服务器地址（留空使用 music.anrand.tech）'},
