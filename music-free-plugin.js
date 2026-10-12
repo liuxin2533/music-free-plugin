@@ -50,7 +50,7 @@ async function source(item, quality) {
 }
 
 module.exports = {
-  platform: '安然音乐', author: 'liuxin2533', version: '0.1.0',
+  platform: '安然音乐', author: 'liuxin2533', version: '0.1.1',
   srcUrl: 'https://music.anrand.tech/plugins/music-free-plugin.js', primaryKey: ['id'],
   cacheControl: 'no-store', supportedSearchType: ['music'],
   userVariables: [{key: 'serverURL', title: '服务器地址（留空使用 music.anrand.tech）'},
@@ -90,3 +90,4 @@ module.exports = {
       sheetItem: {title: virtual ? (sheet.id === 'library' ? '全部已下载' : '最近入库') : result.name}};
   }
 };
+
